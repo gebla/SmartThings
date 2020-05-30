@@ -7,7 +7,8 @@
  *
  *  Date: 2016-04-05
  *
- *  Version: 0.08
+ *  Version: 0.09
+ *
  *
  *  Description:
  *   - Connect your Honeywell Evohome System to SmartThings.
@@ -15,8 +16,12 @@
  *   - For latest documentation see: https://github.com/codersaur/SmartThings
  *
  *  Version History:
- * 
- *   2016-04-05: v0.08
+ *   2020-05-30
+ *    From Smarthings Forum User: Technobuz following changes are made
+ *    - Changed There are three URL’s in the code that needed to be updated from ‘https://tccna.honeywell.com’ to ‘https://mytotalconnectcomfort.com 8’ at line 130, 510 & 582
+ *    - increased the scope of the authenication in lines 519 & 591 by adding ’ EMEA-V1-Get-Location-Installation-Info-By-UserId’ to the end of each scope string. i.e.
+ *   
+ *    2016-04-05: v0.08
  *    - New 'Update Refresh Time' setting to control polling after making an update.
  *    - poll() - If onlyZoneId is 0, this will force a status update for all zones.
  * 
@@ -122,7 +127,7 @@ void updated() {
 	atomicState.debug = settings.prefDebugMode
 	
 	// Evohome:
-	atomicState.evohomeEndpoint = 'https://tccna.honeywell.com'
+	atomicState.evohomeEndpoint = 'https://mytotalconnectcomfort.com'
 	atomicState.evohomeAuth = [tokenLifetimePercentThreshold : 50] // Auth Token will be refreshed when down to 50% of its lifetime.
 	atomicState.evohomeStatusPollInterval = settings.prefEvohomeStatusPollInterval // Poll interval for status updates (minutes).
 	atomicState.evohomeSchedulePollInterval = 60 // Hardcoded to 1hr (minutes).
@@ -502,7 +507,7 @@ private authenticate() {
 	
 	def requestParams = [
 		method: 'POST',
-		uri: 'https://tccna.honeywell.com',
+		uri: 'https://mytotalconnectcomfort.com',
 		path: '/Auth/OAuth/Token',
 		headers: [
 			'Authorization': 'Basic YjAxM2FhMjYtOTcyNC00ZGJkLTg4OTctMDQ4YjlhYWRhMjQ5OnRlc3Q=',
@@ -511,7 +516,7 @@ private authenticate() {
 		],
 		body: [
 			'grant_type':	'password',
-			'scope':	'EMEA-V1-Basic EMEA-V1-Anonymous EMEA-V1-Get-Current-User-Account',
+			'scope':	'EMEA-V1-Basic EMEA-V1-Anonymous EMEA-V1-Get-Current-User-Account EMEA-V1-Get-Location-Installation-Info-By-UserId',
 			'Username':	settings.prefEvohomeUsername,
 			'Password':	settings.prefEvohomePassword
 		]
@@ -574,7 +579,7 @@ private refreshAuthToken() {
 
 	def requestParams = [
 		method: 'POST',
-		uri: 'https://tccna.honeywell.com',
+		uri: 'https://mytotalconnectcomfort.com',
 		path: '/Auth/OAuth/Token',
 		headers: [
 			'Authorization': 'Basic YjAxM2FhMjYtOTcyNC00ZGJkLTg4OTctMDQ4YjlhYWRhMjQ5OnRlc3Q=',
@@ -583,7 +588,7 @@ private refreshAuthToken() {
 		],
 		body: [
 			'grant_type':	'refresh_token',
-			'scope':	'EMEA-V1-Basic EMEA-V1-Anonymous EMEA-V1-Get-Current-User-Account',
+			'scope':	'EMEA-V1-Basic EMEA-V1-Anonymous EMEA-V1-Get-Current-User-Account EMEA-V1-Get-Location-Installation-Info-By-UserId',
 			'refresh_token':	atomicState.evohomeAuth.refreshToken
 		]
 	]
